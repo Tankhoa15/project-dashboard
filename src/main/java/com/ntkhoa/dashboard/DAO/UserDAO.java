@@ -7,6 +7,6 @@ public interface UserDAO {
     Long add(User user);
     boolean delete(Long id);
     boolean update(User user);
-    User findByEmail();
+    User findByEmail(String email);
     boolean login(String email, String password);
 }

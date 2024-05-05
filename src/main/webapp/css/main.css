@@ -1,0 +1,17 @@
+h1{
+    text-align: center;
+}
+a{
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    text-align: center;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}

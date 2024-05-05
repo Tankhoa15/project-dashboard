@@ -87,16 +87,66 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public boolean delete(Long id) {
+        try {
+            PreparedStatement stmt = getConnection().prepareStatement("DELETE FROM users WHERE id = ?");
+            stmt.setLong(1, id);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return false;
     }
 
     @Override
     public boolean update(User user) {
+        try {
+            PreparedStatement stmt = getConnection().prepareStatement("UPDATE users SET full_name = ?, email = ?, password = ? WHERE id = ?");
+            stmt.setString(1, user.getFullName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setLong(4, user.getId());
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return false;
     }
 
     @Override
-    public User findByEmail() {
-        return null;
+    public User findByEmail(String email) {
+        User user = null;
+        try {
+            PreparedStatement stmt = getConnection().prepareStatement("SELECT * from User WHERE email = ?");
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                user = new User();
+                user.setEmail(rs.getString("email"));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
     }
+
 }

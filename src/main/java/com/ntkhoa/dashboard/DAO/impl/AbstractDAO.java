@@ -7,10 +7,16 @@ import java.sql.SQLException;
 
 public abstract class AbstractDAO {
     private Connection connection;
+    private String url = "jdbc:mysql://localhost:3306/dashboard";
 
     protected Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/dashboard", "root", "123456789");
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                connection = DriverManager.getConnection(url, "root", "123456789");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return connection;
     }
