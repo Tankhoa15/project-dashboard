@@ -13,10 +13,30 @@ import java.util.List;
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
+    public boolean login(String email, String password) {
+        boolean isLoggedIn = false;
+        try {
+            String sql = "SELECT COUNT(*) FROM users WHERE email = ? AND password = ?";
+            try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+                stmt.setString(1, email);
+                stmt.setString(2, password);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        int count = rs.getInt(1);
+                        isLoggedIn = (count > 0);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isLoggedIn;
+    }
+
+    @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         try {
-            connect();
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM users");
             if(rs.next()){
@@ -42,7 +62,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Override
     public Long add(User user) {
         try {
-            connect();
             PreparedStatement stmt = getConnection().prepareStatement("INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)");
             stmt.setString(1,user.getFullName());
             stmt.setString(2, user.getEmail());
@@ -60,7 +79,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             try {
                 disconnect();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
         return null;

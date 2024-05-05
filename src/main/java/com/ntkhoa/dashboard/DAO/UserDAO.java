@@ -8,4 +8,5 @@ public interface UserDAO {
     boolean delete(Long id);
     boolean update(User user);
     User findByEmail();
+    boolean login(String email, String password);
 }
